@@ -30,8 +30,8 @@ class ProductController extends AbstractController
 
     public function createProduct(): RedirectResponse
     {
-        $manager = $this->getDoctrine()->getManager();
-        $product = new Product();
+        $manager = $this->getDoctrine()->getManager(); 
+        $product = new Product() ;
         $product -> setTitle('Title '.random_int(0,100));
         $product -> setPrice(random_int(1,10000));
         $product -> setDescription('');
