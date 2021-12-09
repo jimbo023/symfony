@@ -1,26 +1,18 @@
 <?php
 
-class Products
+abstract class Product
 {
-    protected $id;
-    protected $title;
     protected $price;
+    protected $title;
 
-    public function __construct($id = null, $title = null, $price = null)
+    public function getPrice()
     {
-        $this->id = $id;
-        $this->title = $title;
+        return $this->price;
+    }
+
+    public function setPrice(int $price)
+    {
         $this->price = $price;
-    }
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    public function setId($id)
-    {
-        $this->id = $id;
-        return $this;
     }
 
     public function getTitle()
@@ -28,60 +20,76 @@ class Products
         return $this->title;
     }
 
-    public function setTitle($title)
+    public function setTitle(string $title)
     {
         $this->title = $title;
-        return $this;
     }
 
-    public function getPrice()
-    {
-        return $this->price;
-    }
-
-    public function setPrice($price)
-    {
-        $this->price = $price;
-        return $this;
-    }
+    abstract protected function getValue();
 }
 
-class TypeProducts extends Products
+class Item extends Product
 {
-    private $typeProduct; // телефон, планшет или что-то ещё
-    private $model;
+    private $item; // fisicItem, digitalItem
 
-    public function getType()
+    public function getItem()
     {
-        return $this->typeProduct;
+        return $this->item;
     }
 
-    public function setType($typeProduct)
+    public function setItem(string $item)
     {
-        $this->typeProduct = $typeProduct;
-        return $this;
-    }
-    public function getModel()
-    {
-        return $this->model;
+        $this->item = $item;
     }
 
-    public function setModel($model)
+    public function getValue()
     {
-        $this->model = $model;
-        return $this;
-    }
-
-    public function callToProduct()
-    {
-        return "{$this->typeProduct}, {$this->title} (model: {$this->model}) price = {$this->price} rub" . PHP_EOL;
+        return "{$this->item}: {$this->title} - {$this->price} rub" . PHP_EOL;
     }
 }
 
-$a = new TypeProducts();
-$a->setTitle('Samsung');
-$a->setPrice('30000');
-$a->setType('Phone');
-$a->setModel('XR500');
+$a1 = new Item();
+$a1->setItem('fisicItem');
+$a1->setTitle('iPhone');
+$a1->setPrice(5000);
+echo $a1->getValue();
 
-echo $a->callToProduct();
+$a2 = new Item();
+$a2->setItem('DigitalItem');
+$a2->setTitle('Sims 4');
+$a2->setPrice(2999);
+echo $a2->getValue();
+
+// Задание 2
+
+trait db
+{
+    public function connectDB()
+    {
+        mysqli_connect('127.0.0.1', 'root', '', 'gb');
+        echo "connection to DB successed".PHP_EOL;
+    }
+}
+
+class Signeton
+{
+    use db;
+
+    public function __construct()
+    {
+        $this->connectDB();
+    }
+    static protected $instance;
+
+    public static function getInstance() :self {
+        if(self::$instance === null) {
+            self::$instance = new self();
+        }
+        return self::$instance;
+    }
+}
+
+$b=Signeton::getInstance();
+$b=Signeton::getInstance();
+$b=Signeton::getInstance();
+$b=Signeton::getInstance();
